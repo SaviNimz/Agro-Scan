@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'crop_scanning.dart';
 import 'store_data.dart';
+import 'soil_condition.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -38,7 +39,7 @@ class LandingPage extends StatelessWidget {
             SizedBox(height: 20),
             _buildOption(context, Icons.camera_alt, "Scan Your Plant", CropScanningPage()),
             _buildOption(context, Icons.storage, "Store Your Data", StoreDataPage()),
-            _buildOption(context, Icons.science, "Best Soil Condition", null),
+            _buildOption(context, Icons.science, "Best Soil Condition", SoilConditionPage()),
           ],
         ),
       ),

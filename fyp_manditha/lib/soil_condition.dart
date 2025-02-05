@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TreatmentPage extends StatelessWidget {
+class SoilConditionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,15 +26,18 @@ class TreatmentPage extends StatelessWidget {
                   },
                 ),
               ),
+              SizedBox(height: 40),
+              _buildSearchBox(),
               SizedBox(height: 20),
-              _buildCard("Treatment Diagnosis", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
-              SizedBox(height: 20),
-              _buildCard(
-                  "Treatment Method",
-                  "Lorem ipsum dolor sit amet consectetur. In sit nisl consequat lectus. "
-                  "Semper sit diam mauris at pretium. Montes scelerisque rhoncus porttitor "
-                  "rhoncus ac vivamus sagittis etiam. Sodales mauris nunc sed feugiat nulla massa vel. "
-                  "Blandit arcu nunc ultrices in ultrices iaculis vitae ornare. Cum semper felis netus sed vel."),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                ),
+                child: Text("Search", style: TextStyle(color: Colors.white)),
+              ),
             ],
           ),
         ],
@@ -42,7 +45,7 @@ class TreatmentPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(String title, String description) {
+  Widget _buildSearchBox() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Container(
@@ -58,21 +61,17 @@ class TreatmentPage extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Enter the name of the plant",
+                  border: InputBorder.none,
+                ),
               ),
             ),
-            SizedBox(height: 5),
-            Text(
-              description,
-              style: TextStyle(fontSize: 14),
-            ),
+            Icon(Icons.search, color: Colors.black),
           ],
         ),
       ),
