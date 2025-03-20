@@ -62,3 +62,7 @@ windows/build/
 **/prefab_config.json
 **/metadata_generation_command.txt
 
+**/configure_fingerprint.bin
+**/build_file_index.*
+**/symbol_folder.txt
+**/hash_key.txt
