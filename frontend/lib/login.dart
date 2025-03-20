@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'landing.dart';
+import 'signup.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -179,7 +180,11 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         TextButton(
                           onPressed: () {
-                            // Navigate to your SignUpPage
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpPage()),
+                            );
                           },
                           child: const Text(
                             "Sign Up",
