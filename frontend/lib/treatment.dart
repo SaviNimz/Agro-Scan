@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 
 class TreatmentPage extends StatelessWidget {
+  final String prediction;
+
+  TreatmentPage({required this.prediction});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          // Background image
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/leaf_background.jpg'), // Ensure this image exists in assets
+                image: AssetImage('assets/leaf_background.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -27,14 +32,15 @@ class TreatmentPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              _buildCard("Treatment Diagnosis", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+              _buildCard("Treatment Diagnosis", prediction),
               SizedBox(height: 20),
               _buildCard(
                   "Treatment Method",
                   "Lorem ipsum dolor sit amet consectetur. In sit nisl consequat lectus. "
                   "Semper sit diam mauris at pretium. Montes scelerisque rhoncus porttitor "
                   "rhoncus ac vivamus sagittis etiam. Sodales mauris nunc sed feugiat nulla massa vel. "
-                  "Blandit arcu nunc ultrices in ultrices iaculis vitae ornare. Cum semper felis netus sed vel."),
+                  "Blandit arcu nunc ultrices in ultrices iaculis vitae ornare. Cum semper felis netus sed vel."
+              ),
             ],
           ),
         ],

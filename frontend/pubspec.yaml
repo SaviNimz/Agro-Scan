@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.5        # For making HTTP requests
+  image_picker: ^0.8.7+3 # For selecting images from the device (camera or gallery)
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

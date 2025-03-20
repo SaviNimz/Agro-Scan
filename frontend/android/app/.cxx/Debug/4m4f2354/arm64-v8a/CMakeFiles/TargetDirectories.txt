@@ -1,0 +1,2 @@
+D:/Side Projects/agro/my_version/Agro-Scan/frontend/android/app/.cxx/Debug/4m4f2354/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Side Projects/agro/my_version/Agro-Scan/frontend/android/app/.cxx/Debug/4m4f2354/arm64-v8a/CMakeFiles/rebuild_cache.dir
