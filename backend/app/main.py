@@ -1,9 +1,17 @@
 from fastapi import FastAPI
-from .predictor.predict import router as predict_router  # Note the change here
+from fastapi.middleware.cors import CORSMiddleware
+from .predictor.predict import router as predict_router  # Adjust your import as needed
 
 app = FastAPI()
 
-print(predict_router)
+# Enable CORS for all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # can restrict this to specific origins if needed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(predict_router, prefix="/predict", tags=["predict"])
 
