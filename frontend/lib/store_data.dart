@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StoreDataPage extends StatefulWidget {
+  const StoreDataPage({Key? key}) : super(key: key);
+  
   @override
   _StoreDataPageState createState() => _StoreDataPageState();
 }
@@ -31,7 +33,7 @@ class _StoreDataPageState extends State<StoreDataPage> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("User not logged in. Please login first.")),
+        const SnackBar(content: Text("User not logged in. Please login first.")),
       );
       return;
     }
@@ -55,7 +57,7 @@ class _StoreDataPageState extends State<StoreDataPage> {
           .add(data);
       // If saving is successful, show a success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Data saved successfully!")),
+        const SnackBar(content: Text("Data saved successfully!")),
       );
     } catch (e) {
       // Handle any errors during save
@@ -67,15 +69,15 @@ class _StoreDataPageState extends State<StoreDataPage> {
 
   Widget _buildTextField(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.9),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: Colors.black12,
+              color: Colors.black26,
               blurRadius: 10,
               spreadRadius: 2,
             ),
@@ -86,14 +88,15 @@ class _StoreDataPageState extends State<StoreDataPage> {
           children: [
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.grey,
               ),
             ),
             TextField(
               controller: controller,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
               ),
             ),
@@ -105,55 +108,67 @@ class _StoreDataPageState extends State<StoreDataPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/leaf_background.jpg'),
-                fit: BoxFit.cover,
+    return Stack(
+      children: [
+        // Background image remains
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/leaf_background.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        // Overlay a transparent scaffold with modern styling
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.white.withOpacity(0.9),
+            elevation: 0,
+            centerTitle: true,
+            title: const Text(
+              "Store Data",
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.green),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0, bottom: 24.0),
+              child: Column(
+                children: [
+                  _buildTextField("Enter Plant Type:", _plantTypeController),
+                  _buildTextField("Enter Moisture Level:", _moistureLevelController),
+                  _buildTextField("Enter PH Level:", _phLevelController),
+                  _buildTextField("Enter Nutrition Level:", _nutritionLevelController),
+                  _buildTextField("Enter Pesticide Volume:", _pesticideVolumeController),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _saveData,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    ),
+                    child: const Text("Save", style: TextStyle(color: Colors.white)),
+                  ),
+                ],
               ),
             ),
           ),
-          Column(
-            children: [
-              SizedBox(height: 40),
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              SizedBox(height: 20),
-              _buildTextField("Enter Plant Type:", _plantTypeController),
-              _buildTextField("Enter Moisture Level:", _moistureLevelController),
-              _buildTextField("Enter PH Level:", _phLevelController),
-              _buildTextField("Enter Nutrition Level:", _nutritionLevelController),
-              _buildTextField("Enter Pesticide Volume:", _pesticideVolumeController),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    await _saveData();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  ),
-                  child: Text("Save", style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
