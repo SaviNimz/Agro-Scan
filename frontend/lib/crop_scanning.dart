@@ -25,12 +25,12 @@ class _CropScanningPageState extends State<CropScanningPage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text("No Image Selected"),
-          content: Text("Please select an image."),
+          title: const Text("No Image Selected"),
+          content: const Text("Please select an image."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("OK"),
+              child: const Text("OK"),
             )
           ],
         ),
@@ -40,11 +40,12 @@ class _CropScanningPageState extends State<CropScanningPage> {
 
   // Upload image and return prediction result
   Future<String?> _uploadImage(File imageFile) async {
-    var uri = Uri.parse("http://10.0.2.2:8000/predict/");
-    var request = http.MultipartRequest('POST', uri);
+    final uri = Uri.parse("http://10.0.2.2:8000/predict/");
+    final request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+
     try {
-      var response = await request.send();
+      final response = await request.send();
       if (response.statusCode == 200) {
         final respStr = await response.stream.bytesToString();
         final data = jsonDecode(respStr);
@@ -53,12 +54,12 @@ class _CropScanningPageState extends State<CropScanningPage> {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: Text("Error"),
+            title: const Text("Error"),
             content: Text("Error: ${response.statusCode}"),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("OK"),
+                child: const Text("OK"),
               )
             ],
           ),
@@ -69,12 +70,12 @@ class _CropScanningPageState extends State<CropScanningPage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text("Exception"),
+          title: const Text("Exception"),
           content: Text("An error occurred: $e"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("OK"),
+              child: const Text("OK"),
             )
           ],
         ),
@@ -90,19 +91,19 @@ class _CropScanningPageState extends State<CropScanningPage> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: Text("No Image Selected"),
-          content: Text("Please select an image first."),
+          title: const Text("No Image Selected"),
+          content: const Text("Please select an image first."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("OK"),
+              child: const Text("OK"),
             )
           ],
         ),
       );
       return;
     }
-    String? prediction = await _uploadImage(_selectedImage!);
+    final prediction = await _uploadImage(_selectedImage!);
     if (prediction != null) {
       Navigator.push(
         context,
@@ -111,83 +112,131 @@ class _CropScanningPageState extends State<CropScanningPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background image
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/leaf_background.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Column(
-            children: [
-              SizedBox(height: 40),
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              SizedBox(height: 20),
-              // Display the selected image if available, otherwise a default image.
-              Center(
-                child: _selectedImage != null
-                    ? Image.file(_selectedImage!, height: 200)
-                    : Image.asset('assets/tomatoes.jpg', height: 200),
-              ),
-              SizedBox(height: 20),
-              _buildButton(context, Icons.camera_alt, "Open Camera", ImageSource.camera),
-              _buildButton(context, Icons.photo, "Open Gallery", ImageSource.gallery),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: ElevatedButton(
-                  onPressed: _showTreatment,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  ),
-                  child: Text("Show Treatment to Disease", style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildButton(BuildContext context, IconData icon, String label, ImageSource source) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 40),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
+          elevation: 4,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         ),
-        onPressed: () {
-          _pickImage(source);
-        },
+        onPressed: () => _pickImage(source),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: Colors.black),
-            SizedBox(width: 10),
-            Text(label, style: TextStyle(color: Colors.black, fontSize: 16)),
+            const SizedBox(width: 10),
+            Text(label, style: const TextStyle(color: Colors.black, fontSize: 16)),
           ],
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Background image with a subtle dark overlay
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: const AssetImage('assets/leaf_background.jpg'),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.2),
+                BlendMode.darken,
+              ),
+            ),
+          ),
+        ),
+        // Transparent scaffold overlay with a styled AppBar
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.white.withOpacity(0.9),
+            elevation: 0,
+            centerTitle: true,
+            title: const Text(
+              "Crop Scanning",
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.green),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                // Display selected or default image inside a fixed size card-like container
+                Center(
+                  child: Container(
+                    width: 350,
+                    height: 250,
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 6,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: _selectedImage != null
+                          ? Image.file(
+                              _selectedImage!,
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              'assets/logo.png',
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _buildButton(context, Icons.camera_alt, "Open Camera", ImageSource.camera),
+                _buildButton(context, Icons.photo, "Open Gallery", ImageSource.gallery),
+                const SizedBox(height: 30),
+                // Large black button at the bottom
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: ElevatedButton(
+                    onPressed: _showTreatment,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    ),
+                    child: const Text(
+                      "Show Treatment to Disease",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
