@@ -17,8 +17,13 @@ This guide will walk you through setting up the backend of the application, incl
      ```bash
      cd backend
      ```
+3. **create virtual environment**
+   - create a virtual environment if you don't have one installed:
+     ```bash
+     python -m venv env
+     ```
 
-3. **Activate the Virtual Environment**
+4. **Activate the Virtual Environment**
    - Activate the virtual environment using the following command (Windows):
      ```bash
      .\env\Scripts\activate
@@ -28,13 +33,13 @@ This guide will walk you through setting up the backend of the application, incl
      source env/bin/activate
      ```
 
-4. **Install Dependencies**
+5. **Install Dependencies**
    - Install the required Python packages by running:
      ```bash
      pip install -r requirements.txt
      ```
 
-5. **Run the Application**
+6. **Run the Application**
    - Start the backend server with hot-reloading enabled:
      ```bash
      python -m uvicorn app.main:app --reload
