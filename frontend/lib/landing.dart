@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'crop_scanning.dart';
 import 'store_data.dart';
 import 'soil_condition.dart';
+import 'visualize_data.dart'; // Import the visualization page
 
 class LandingPage extends StatelessWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -95,9 +96,12 @@ class LandingPage extends StatelessWidget {
                       // Option Tiles
                       _buildOption(context, Icons.camera_alt, "Scan Your Plant", CropScanningPage()),
                       const SizedBox(height: 16),
+                      _buildOption(context, Icons.science, "Best Soil Condition", SoilConditionPage()),
+                      const SizedBox(height: 16),
                       _buildOption(context, Icons.storage, "Store Your Data", StoreDataPage()),
                       const SizedBox(height: 16),
-                      _buildOption(context, Icons.science, "Best Soil Condition", SoilConditionPage()),
+                      // New option for Visualize Data
+                      _buildOption(context, Icons.bar_chart, "Visualize Your Data", VisualizeDataPage()),
                     ],
                   ),
                 ),
