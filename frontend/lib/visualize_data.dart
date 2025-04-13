@@ -111,6 +111,7 @@ class _VisualizeDataPageState extends State<VisualizeDataPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Using a ListView for responsive design.
     return Scaffold(
       appBar: AppBar(
         title: const Text("Visualize Data"),
@@ -128,122 +129,140 @@ class _VisualizeDataPageState extends State<VisualizeDataPage> {
             return const Center(child: Text("No data available."));
           }
           final List<PlantData> plantData = snapshot.data!;
-          // Ensure data is sorted by timestamp for time-series visualizations.
+          // Sort data by timestamp for time-series visualizations.
           plantData.sort((a, b) => a.timestamp.compareTo(b.timestamp));
           final nutritionChartData = _buildNutritionChartData(plantData);
           final distributionData = _buildPlantDistributionData(plantData);
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                const Text(
-                  "Moisture Level Trend",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  height: 300,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SfCartesianChart(
-                    primaryXAxis: DateTimeAxis(
-                      dateFormat: DateFormat.Md(),
-                      edgeLabelPlacement: EdgeLabelPlacement.shift,
-                    ),
-                    primaryYAxis: NumericAxis(),
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <CartesianSeries<PlantData, DateTime>>[
-                      LineSeries<PlantData, DateTime>(
-                        dataSource: plantData,
-                        xValueMapper: (PlantData plant, _) => plant.timestamp,
-                        yValueMapper: (PlantData plant, _) => plant.moistureLevel,
-                        markerSettings: const MarkerSettings(isVisible: true),
-                        dataLabelSettings: const DataLabelSettings(isVisible: true),
-                      )
-                    ],
+          return ListView(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            children: [
+              _buildChartCard(
+                title: "Moisture Level Trend",
+                child: SfCartesianChart(
+                  primaryXAxis: DateTimeAxis(
+                    dateFormat: DateFormat.Md(),
+                    edgeLabelPlacement: EdgeLabelPlacement.shift,
                   ),
+                  primaryYAxis: NumericAxis(),
+                  tooltipBehavior: TooltipBehavior(enable: true),
+                  series: <CartesianSeries<PlantData, DateTime>>[
+                    LineSeries<PlantData, DateTime>(
+                      dataSource: plantData,
+                      xValueMapper: (PlantData plant, _) => plant.timestamp,
+                      yValueMapper: (PlantData plant, _) => plant.moistureLevel,
+                      markerSettings: const MarkerSettings(isVisible: true),
+                      dataLabelSettings: const DataLabelSettings(isVisible: true),
+                    )
+                  ],
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Average Nutrition per Plant Type",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              _buildChartCard(
+                title: "Average Nutrition per Plant Type",
+                child: SfCartesianChart(
+                  primaryXAxis: CategoryAxis(),
+                  primaryYAxis: NumericAxis(),
+                  tooltipBehavior: TooltipBehavior(enable: true),
+                  series: <CartesianSeries<NutritionChartData, String>>[
+                    ColumnSeries<NutritionChartData, String>(
+                      dataSource: nutritionChartData,
+                      xValueMapper: (NutritionChartData data, _) => data.plantType,
+                      yValueMapper: (NutritionChartData data, _) => data.averageNutrition,
+                      dataLabelSettings: const DataLabelSettings(isVisible: true),
+                    )
+                  ],
                 ),
-                Container(
-                  height: 300,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    primaryYAxis: NumericAxis(),
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <CartesianSeries<NutritionChartData, String>>[
-                      ColumnSeries<NutritionChartData, String>(
-                        dataSource: nutritionChartData,
-                        xValueMapper: (NutritionChartData data, _) => data.plantType,
-                        yValueMapper: (NutritionChartData data, _) => data.averageNutrition,
-                        dataLabelSettings: const DataLabelSettings(isVisible: true),
-                      )
-                    ],
+              ),
+              _buildChartCard(
+                title: "Moisture vs. pH Correlation",
+                child: SfCartesianChart(
+                  primaryXAxis: NumericAxis(
+                    title: AxisTitle(text: 'Moisture Level'),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Moisture vs. pH Correlation",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  height: 300,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SfCartesianChart(
-                    primaryXAxis: NumericAxis(
-                      title: AxisTitle(text: 'Moisture Level'),
-                    ),
-                    primaryYAxis: NumericAxis(
-                      title: AxisTitle(text: 'pH Level'),
-                    ),
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    series: <CartesianSeries<PlantData, double>>[
-                      ScatterSeries<PlantData, double>(
-                        dataSource: plantData,
-                        xValueMapper: (PlantData plant, _) => plant.moistureLevel,
-                        yValueMapper: (PlantData plant, _) => plant.phLevel,
-                        markerSettings: const MarkerSettings(
-                          isVisible: true,
-                          height: 10,
-                          width: 10,
-                        ),
-                        dataLabelSettings: const DataLabelSettings(isVisible: false),
-                      )
-                    ],
+                  primaryYAxis: NumericAxis(
+                    title: AxisTitle(text: 'pH Level'),
                   ),
+                  tooltipBehavior: TooltipBehavior(enable: true),
+                  series: <CartesianSeries<PlantData, double>>[
+                    ScatterSeries<PlantData, double>(
+                      dataSource: plantData,
+                      xValueMapper: (PlantData plant, _) => plant.moistureLevel,
+                      yValueMapper: (PlantData plant, _) => plant.phLevel,
+                      markerSettings: const MarkerSettings(
+                        isVisible: true,
+                        height: 10,
+                        width: 10,
+                      ),
+                    )
+                  ],
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  "Plant Type Distribution",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  height: 300,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SfCircularChart(
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    legend: Legend(
-                      isVisible: true,
-                      overflowMode: LegendItemOverflowMode.wrap,
-                    ),
-                    series: <CircularSeries>[
-                      PieSeries<PlantDistributionData, String>(
-                        dataSource: distributionData,
-                        xValueMapper: (PlantDistributionData data, _) => data.plantType,
-                        yValueMapper: (PlantDistributionData data, _) => data.count,
-                        dataLabelSettings: const DataLabelSettings(isVisible: true),
-                      )
-                    ],
+              ),
+              _buildChartCard(
+                title: "Plant Type Distribution",
+                child: SfCircularChart(
+                  tooltipBehavior: TooltipBehavior(enable: true),
+                  legend: Legend(
+                    isVisible: true,
+                    overflowMode: LegendItemOverflowMode.wrap,
                   ),
+                  series: <CircularSeries>[
+                    PieSeries<PlantDistributionData, String>(
+                      dataSource: distributionData,
+                      xValueMapper: (PlantDistributionData data, _) => data.plantType,
+                      yValueMapper: (PlantDistributionData data, _) => data.count,
+                      dataLabelSettings: const DataLabelSettings(isVisible: true),
+                    )
+                  ],
                 ),
-                const SizedBox(height: 24),
-              ],
-            ),
+              ),
+              _buildChartCard(
+                title: "Pesticide Volume Trend",
+                child: SfCartesianChart(
+                  primaryXAxis: DateTimeAxis(
+                    dateFormat: DateFormat.Md(),
+                    edgeLabelPlacement: EdgeLabelPlacement.shift,
+                  ),
+                  primaryYAxis: NumericAxis(),
+                  tooltipBehavior: TooltipBehavior(enable: true),
+                  series: <CartesianSeries<PlantData, DateTime>>[
+                    LineSeries<PlantData, DateTime>(
+                      dataSource: plantData,
+                      xValueMapper: (PlantData plant, _) => plant.timestamp,
+                      yValueMapper: (PlantData plant, _) => plant.pesticideVolume,
+                      markerSettings: const MarkerSettings(isVisible: true),
+                      dataLabelSettings: const DataLabelSettings(isVisible: true),
+                    )
+                  ],
+                ),
+              ),
+            ],
           );
         },
+      ),
+    );
+  }
+
+  /// Helper widget to build a chart card with title and consistent styling.
+  Widget _buildChartCard({required String title, required Widget child}) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 300, // Adjust this height as needed for your charts.
+              child: child,
+            ),
+          ],
+        ),
       ),
     );
   }
